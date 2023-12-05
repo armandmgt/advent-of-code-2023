@@ -1,5 +1,3 @@
-use std::cmp::min;
-
 advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -20,68 +18,6 @@ pub fn part_one(input: &str) -> Option<u32> {
     }
   }
   Some(sum)
-}
-
-fn try_digit_from_slice(slice: &[u8]) -> Option<u32> {
-  if slice.len() == 0 { return None; }
-  if slice[0].is_ascii_digit() {
-    return char::from(slice[0]).to_digit(10);
-  }
-  if slice.len() < 3 { return None; }
-  match (slice.len(), &slice[0..3]) {
-    (_, &[111, 110, 101]) => Some(1),
-    (_, &[116, 119, 111]) => Some(2),
-    (_, &[115, 105, 120]) => Some(6),
-    (4.., _) => {
-      match (slice.len(), &slice[0..4]) {
-        (_, &[102, 111, 117, 114]) => Some(4),
-        (_, &[102, 105, 118, 101]) => Some(5),
-        (_, &[110, 105, 110, 101]) => Some(9),
-        (5.., _) => {
-          match &slice[0..5] {
-            &[116, 104, 114, 101, 101] => Some(3),
-            &[115, 101, 118, 101, 110] => Some(7),
-            &[101, 105, 103, 104, 116] => Some(8),
-            _ => None,
-          }
-        }
-        _ => None,
-      }
-    }
-    _ => None,
-  }
-}
-
-pub fn old_part_two(input: &str) -> Option<u32> {
-  Some(
-    input.split_terminator("\n").map(|line| {
-      println!("line is {line}");
-      let line = line.as_bytes();
-
-      let mut left = None;
-      let mut right = None;
-      for i in 0..(line.len() / 2) {
-        if left.is_none() {
-          let constrained_left_end = min(i + 5, line.len());
-          println!("Checking in left slice: {:?}", &line[i..constrained_left_end]);
-          left = try_digit_from_slice(&line[i..constrained_left_end]);
-        }
-
-        if right.is_none() {
-          let constrained_right_end = min(line.len() - 1 - i + 5, line.len());
-          println!("Checking in right slice: {:?}", &line[line.len() - 1 - i..constrained_right_end]);
-          right = try_digit_from_slice(&line[line.len() - i..constrained_right_end]);
-        }
-
-        if left.is_some() && right.is_some() { break; }
-      }
-
-      let left = left.expect("Could not find left number");
-      let right = right.expect("Could not find right number");
-      let number = format!("{left}{right}");
-      return number.parse::<u32>().expect("Failed to parse number");
-    }).sum()
-  )
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
