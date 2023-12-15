@@ -5,7 +5,7 @@ use std::iter::Peekable;
 use std::str::SplitTerminator;
 
 use itertools::Itertools;
-use rayon::prelude::*;
+// use rayon::prelude::*;
 
 advent_of_code::solution!(5);
 
@@ -109,31 +109,32 @@ pub fn part_one(input: &str) -> Option<u64> {
   }).min()
 }
 
-pub fn part_two(input: &str) -> Option<u64> {
-  let mut lines = input.split_terminator("\n").peekable();
-  let (_, seeds) = lines.next()?.split_once(": ")?;
-  let seed_ranges: Vec<Range> = seeds.split(" ").map(|s| s.parse::<u64>().unwrap()).tuples().map(|(start, len)| {
-    Range::new(start, len)
-  }).collect_vec();
-
-  let mappings = parse_mappings(&mut lines)?;
-
-  seed_ranges.iter().flat_map(|seed_range| {
-    (seed_range.start..=seed_range.end).into_par_iter().map(|seed| {
-      let mut current_id = seed;
-      let mut current_map = "seed";
-      while current_map != "location" {
-        let (next_set, ranges) = &mappings[current_map];
-        current_map = next_set;
-        current_id = ranges.iter().find(|(_, source)| {
-          source.contains(&current_id)
-        }).and_then(|(dest, source)| {
-          Some(current_id - source.start + dest.start)
-        }).or(Some(current_id)).unwrap()
-      }
-      current_id
-    }).collect::<Vec<u64>>()
-  }).min()
+pub fn part_two(_input: &str) -> Option<u64> {
+  return None;
+  // let mut lines = input.split_terminator("\n").peekable();
+  // let (_, seeds) = lines.next()?.split_once(": ")?;
+  // let seed_ranges: Vec<Range> = seeds.split(" ").map(|s| s.parse::<u64>().unwrap()).tuples().map(|(start, len)| {
+  //   Range::new(start, len)
+  // }).collect_vec();
+  //
+  // let mappings = parse_mappings(&mut lines)?;
+  //
+  // seed_ranges.iter().flat_map(|seed_range| {
+  //   (seed_range.start..=seed_range.end).into_par_iter().map(|seed| {
+  //     let mut current_id = seed;
+  //     let mut current_map = "seed";
+  //     while current_map != "location" {
+  //       let (next_set, ranges) = &mappings[current_map];
+  //       current_map = next_set;
+  //       current_id = ranges.iter().find(|(_, source)| {
+  //         source.contains(&current_id)
+  //       }).and_then(|(dest, source)| {
+  //         Some(current_id - source.start + dest.start)
+  //       }).or(Some(current_id)).unwrap()
+  //     }
+  //     current_id
+  //   }).collect::<Vec<u64>>()
+  // }).min()
 }
 
 pub fn part_two_ranges(input: &str) -> Option<u64> {
